@@ -20,7 +20,7 @@ def compare(type='bert'):
 df0 = pd.read_excel('program_descriptions.xlsx')
 df1 = pd.read_excel('interventions.xlsx')
 
-# column to iterate through
+# a column to iterate through
 column_name = 'program_descriptions'
 
 # iterate through the cells of a column
@@ -31,4 +31,4 @@ for cell in df0[column_name]:
         for cel in row:
             print(cel)
             similarity = compare(cel)
-            # write similarity to the last column
+            # write the similarity score to the last column
