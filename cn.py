@@ -5,11 +5,13 @@ import pandas as pd
 # Helper functions
 
 
-def compare(type='bert'):
+def compare(type='bert', cell, celll):
     # bert is the default comparsion method
     if type == 'bert':
         return
     if type == 'token_based':
+        # find and count the tokens that each cell has in common
+        # remove stopwords?
         return
 
 
@@ -28,7 +30,7 @@ for cell in df0[column_name]:
     print(cell)
     # iterate through every cell of a spreadsheet
     for index, row in df1.iterrows():
-        for cel in row:
-            print(cel)
-            similarity = compare(cel)
+        for celll in row:
+            print(cell)
+            similarity = compare(celll)
             # write the similarity score to the last column
