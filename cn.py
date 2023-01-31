@@ -23,20 +23,20 @@ for index, row in df_i.iterrows():
     for cell in row:
         sentences1.append(cell)
 
-#Encode all sentences
+# Encode all sentences
 embeddings0 = model.encode(sentences0)
 embeddings1 = model.encode(sentences1)
 
-#Compute cosine similarity between all pairs
+# Compute cosine similarity between all pairs
 cos_sim = util.cos_sim(embeddings0, embeddings1)
 
-#Add all pairs to a list with their cosine similarity score
+# Add all pairs to a list with their cosine similarity score
 all_sentence_combinations = []
 for i in range(len(cos_sim)-1):
     for j in range(i+1, len(cos_sim)):
         all_sentence_combinations.append([cos_sim[i][j], i, j])
 
-#Sort list by the highest cosine similarity score
+# Sort list by the highest cosine similarity score
 all_sentence_combinations = sorted(all_sentence_combinations, key=lambda x: x[0], reverse=True)
 
 print("Top-5 most similar pairs:")
