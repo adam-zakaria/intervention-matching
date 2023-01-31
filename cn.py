@@ -1,29 +1,9 @@
-# imports
-
+from sentence_transformers import SentenceTransformer, util
 import pandas as pd
 
-# Helper functions
-
-
-def compare(cell, celll, type='bert'):
-    # bert is the default comparsion method
-    if type == 'bert':
-        return
-    if type == 'token_based':
-        # find and count the tokens that each cell has in common
-        # remove stopwords?
-        return
-
-# This will replace all NaN values in the DataFrame with the specified value.
-# And there are a lot of other functions to replace NaN with something else.
-df = df.fillna(value)
-
-
-# Main execution
-
+model = SentenceTransformer('all-MiniLM-L6-v2')
 
 # load the spreadsheets 
-# note: run print(df0) to see the spreadsheets (useful for troubleshooting)
 df_pd = pd.read_excel('program descriptions.xlsx')
 df_i = pd.read_excel('interventions.xlsx')
 
@@ -32,23 +12,33 @@ df_pd = df_pd.dropna(axis=1)
 
 # a column to iterate through
 column_name = 'program descriptions'
-#column_name = 'c'
 
-# iterate through the cells of a column
+sentences0 = []
+sentences1 = []
+
 for cell in df_pd[column_name]:
-    print(cell)
-    # iterate through every cell of a spreadsheet
-    for index, row in df_i.iterrows():
-        for celll in row:
-            print(celll)
-            similarity = compare(cell, celll)
-            # write the similarity score to the last column
+    sentences0.append(cell)
 
+for index, row in df_i.iterrows():
+    for cell in row:
+        sentences1.append(cell)
 
-"""
-Notes
-    1/13/23
-        For next time, start by figuring out what should be done about NaNs.
+#Encode all sentences
+embeddings0 = model.encode(sentences0)
+embeddings1 = model.encode(sentences1)
 
-"""
+#Compute cosine similarity between all pairs
+cos_sim = util.cos_sim(embeddings0, embeddings1)
 
+#Add all pairs to a list with their cosine similarity score
+all_sentence_combinations = []
+for i in range(len(cos_sim)-1):
+    for j in range(i+1, len(cos_sim)):
+        all_sentence_combinations.append([cos_sim[i][j], i, j])
+
+#Sort list by the highest cosine similarity score
+all_sentence_combinations = sorted(all_sentence_combinations, key=lambda x: x[0], reverse=True)
+
+print("Top-5 most similar pairs:")
+for score, i, j in all_sentence_combinations[0:5]:
+    print("{} \t {} \t {:.4f}".format(sentences0[i], sentences1[j], cos_sim[i][j]))
